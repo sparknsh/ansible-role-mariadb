@@ -1,0 +1,29 @@
+---
+
+mariadb__packages:
+  - "{{ 'mariadb-server'
+      if (ansible_distribution == 'Fedora')
+      else 'MariaDB-server' }}"
+  - MySQL-python
+
+mariadb__service: "{{ 'mariadb'
+                    if ((ansible_distribution_major_version >= '7') or
+                    ((ansible_distribution == 'Fedora') and
+                    (ansible_distribution_major_version >= '27')))
+                    else 'mysql' }}"
+
+mariadb__mainconfigdir: /etc
+mariadb__configdir: /etc/my.cnf.d
+mariadb__config_file: /etc/my.cnf.d/server.cnf
+mariadb__sysdir: /var/lib/mysql
+mariadb__logdir: /var/lib/mysql
+
+mariadb__conf_remove:
+  - "{{ mariadb__configdir }}/auth_gssapi.cnf"
+  - "{{ mariadb__configdir }}/client.cnf"
+  - "{{ mariadb__configdir }}/cracklib_password_check.cnf"
+  - "{{ mariadb__configdir }}/enable_encryption.preset"
+  - "{{ mariadb__configdir }}/mysql-clients.cnf"
+  - "{{ mariadb__configdir }}/server.cnf"
+  - "{{ mariadb__configdir }}/rocksdb.cnf"
+  - "{{ mariadb__configdir }}/tokudb.cnf"

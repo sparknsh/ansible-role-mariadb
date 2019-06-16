@@ -1,0 +1,9 @@
+---
+
+- name: Add MariaDB YUM Repo
+  yum_repository:
+    name: MariaDB
+    description: Maridb repository
+    baseurl: "{{ mariadb__redhat_repo }}"
+    gpgcheck: true
+    gpgkey: "{{ mariadb__redhat_repo_key }}"

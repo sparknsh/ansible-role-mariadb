@@ -1,0 +1,160 @@
+# {{ ansible_managed }}
+
+[client]
+port = {{ mariadb__port }}
+socket = {{ mariadb__socket }}
+
+# Here is entries for some specific programs
+# The following values assume you have at least 32M ram
+
+# This was formally known as [safe_mysqld]. Both versions are currently parsed.
+[mysqld_safe]
+socket = {{ mariadb__socket }}
+nice = 0
+skip_log_error
+syslog
+
+[mysqldump]
+quick
+quote-names
+max_allowed_packet = 16M
+
+[mysqld]
+#
+# * Basic Settings
+#
+user = {{ mariadb__user }}
+pid-file = {{ mariadb__pidfile }}
+socket = {{ mariadb__socket }}
+port = {{ mariadb__port }}
+basedir = {{ mariadb__basedir }}
+datadir = {{ mariadb__datadir }}
+tmpdir = {{ mariadb__tmpdir }}
+{{ '# ' if mariadb__lc_messages_dir is not defined else '' }}lc_messages_dir = {{ mariadb__lc_messages_dir | default('', true) }}
+{{ '# ' if mariadb__lc_messages is not defined else '' }}lc_messages = {{ mariadb__lc_messages | default('', true) }}
+{{ '# ' if mariadb__skip_external_locking is not defined or not mariadb__skip_external_locking else '' }}skip-external-locking
+{{ '# ' if mariadb__skip_name_resolve is not defined or not mariadb__skip_name_resolve else '' }}skip_name_resolve
+{{ '# ' if mariadb__character_set_server is not defined else '' }}character_set_server = {{ mariadb__character_set_server | default('', true) }}
+{{ '# ' if mariadb__collation_server is not defined else '' }}collation_server = {{ mariadb__collation_server | default('', true) }}
+#
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+bind-address = {{ mariadb__bind_address }}
+#
+# * Fine Tuning
+#
+{{ '# ' if mariadb__max_connections is not defined else '' }}max_connections = {{ mariadb__max_connections | default('', true) }}
+{{ '# ' if mariadb__connect_timeout is not defined else '' }}connect_timeout = {{ mariadb__connect_timeout | default('', true) }}
+{{ '# ' if mariadb__wait_timeout is not defined else '' }}wait_timeout = {{ mariadb__wait_timeout | default('', true) }}
+{{ '# ' if mariadb__max_allowed_packet is not defined else '' }}max_allowed_packet = {{ mariadb__max_allowed_packet | default('', true) }}
+{{ '# ' if mariadb__thread_cache_size is not defined else '' }}thread_cache_size = {{ mariadb__thread_cache_size | default('', true) }}
+{{ '# ' if mariadb__sort_buffer_size is not defined else '' }}sort_buffer_size = {{ mariadb__sort_buffer_size | default('', true) }}
+{{ '# ' if mariadb__bulk_insert_buffer_size is not defined else '' }}bulk_insert_buffer_size = {{ mariadb__bulk_insert_buffer_size | default('', true) }}
+{{ '# ' if mariadb__tmp_table_size is not defined else '' }}tmp_table_size = {{ mariadb__tmp_table_size | default('', true) }}
+{{ '# ' if mariadb__max_heap_table_size is not defined else '' }}max_heap_table_size = {{ mariadb__max_heap_table_size | default('', true) }}
+#
+# * MyISAM
+#
+# This replaces the startup script and checks MyISAM tables if needed
+# the first time they are touched. On error, make copy and try a repair.
+{{ '# ' if mariadb__myisam_recover_options is not defined else '' }}myisam_recover_options = {{ mariadb__myisam_recover_options | default('', true) }}
+{{ '# ' if mariadb__key_buffer_size is not defined else '' }}key_buffer_size = {{ mariadb__key_buffer_size | default('', true) }}
+{{ '# ' if mariadb__open_files_limit is not defined else '' }}open-files-limit = {{ mariadb__open_files_limit | default('', true) }}
+{{ '# ' if mariadb__table_open_cache is not defined else '' }}table_open_cache = {{ mariadb__table_open_cache | default('', true) }}
+{{ '# ' if mariadb__myisam_sort_buffer_size is not defined else '' }}myisam_sort_buffer_size = {{ mariadb__myisam_sort_buffer_size | default('', true) }}
+{{ '# ' if mariadb__concurrent_insert is not defined else '' }}concurrent_insert = {{ mariadb__concurrent_insert | default('', true) }}
+{{ '# ' if mariadb__read_buffer_size is not defined else '' }}read_buffer_size = {{ mariadb__read_buffer_size | default('', true) }}
+{{ '# ' if mariadb__read_rnd_buffer_size is not defined else '' }}read_rnd_buffer_size = {{ mariadb__read_rnd_buffer_size | default('', true) }}
+#
+# * Query Cache Configuration
+#
+# Cache only tiny result sets, so we can fit more in the query cache.
+{{ '# ' if mariadb__query_cache_limit is not defined else '' }}query_cache_limit = {{ mariadb__query_cache_limit | default('', true) }}
+{{ '# ' if mariadb__query_cache_size is not defined else '' }}query_cache_size = {{ mariadb__query_cache_size | default('', true) }}
+# for more write intensive setups, set to DEMAND or OFF
+{{ '# ' if mariadb__query_cache_type is not defined else '' }}query_cache_type = {{ mariadb__query_cache_type | default('', true) }}
+#
+# * Logging and Replication
+#
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# As of 5.1 you can enable the log at runtime!
+{{ '# ' if mariadb__general_log_file is not defined else '' }}general_log_file = {{ mariadb__logdir + '/' + mariadb__general_log_file | default('', true) }}
+{{ '# ' if mariadb__general_log  is not defined else '' }}general_log  = {{ mariadb__general_log  | default('', true) }}
+#
+# Error logging goes to syslog due to /etc/mysql/conf.d/mysqld_safe_syslog.cnf.
+#
+# we do want to know about network errors and such
+{{ '# ' if mariadb__log_warnings is not defined else '' }}log_warnings = {{ mariadb__log_warnings | default('', true) }}
+#
+# Enable the slow query log to see queries with especially long duration
+{{ '# ' if mariadb__slow_query_log is not defined else '' }}slow_query_log = {{ mariadb__slow_query_log | default('', true) }}
+{{ '# ' if mariadb__slow_query_log_file is not defined else '' }}slow_query_log_file = {{ mariadb__logdir + '/' + mariadb__slow_query_log_file | default('', true) }}
+{{ '# ' if mariadb__long_query_time is not defined else '' }}long_query_time = {{ mariadb__long_query_time | default('', true) }}
+{{ '# ' if mariadb__log_slow_rate_limit is not defined else '' }}log_slow_rate_limit = {{ mariadb__log_slow_rate_limit | default('', true) }}
+{{ '# ' if mariadb__log_slow_verbosity is not defined else '' }}log_slow_verbosity = {{ mariadb__log_slow_verbosity | default('', true) }}
+
+{{ '# ' if mariadb__log_queries_not_using_indexes is not defined or not mariadb__log_queries_not_using_indexes else '' }}log-queries-not-using-indexes
+{{ '# ' if mariadb__log_slow_admin_statements is not defined or not mariadb__log_slow_admin_statements else '' }}log_slow_admin_statements
+#
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+{{ '# ' if mariadb__server_id is not defined else '' }}server-id = {{ mariadb__server_id | default('', true) }}
+{{ '# ' if mariadb__report_host is not defined else '' }}report_host = {{ mariadb__report_host | default('', true) }}
+{{ '# ' if mariadb__auto_increment_increment is not defined else '' }}auto_increment_increment = {{ mariadb__auto_increment_increment | default('', true) }}
+{{ '# ' if mariadb__auto_increment_offset is not defined else '' }}auto_increment_offset = {{ mariadb__auto_increment_offset | default('', true) }}
+{{ '# ' if mariadb__log_bin is not defined else '' }}log_bin = {{ mariadb__logdir + '/' + mariadb__log_bin | default('', true) }}
+{{ '# ' if mariadb__log_bin_index is not defined else '' }}log_bin_index = {{ mariadb__logdir + '/' + mariadb__log_bin_index | default('', true) }}
+# not fab for performance, but safer
+{{ '# ' if mariadb__sync_binlog is not defined else '' }}sync_binlog = {{ mariadb__sync_binlog | default('', true) }}
+{{ '# ' if mariadb__expire_logs_days is not defined else '' }}expire_logs_days = {{ mariadb__expire_logs_days | default('', true) }}
+{{ '# ' if mariadb__max_binlog_size is not defined else '' }}max_binlog_size = {{ mariadb__max_binlog_size | default('', true) }}
+# slaves
+{{ '# ' if mariadb__relay_log is not defined else '' }}relay_log = {{ mariadb__logdir + '/' + mariadb__relay_log | default('', true) }}
+{{ '# ' if mariadb__relay_log_index is not defined else '' }}relay_log_index = {{ mariadb__logdir + '/' + mariadb__relay_log_index | default('', true) }}
+{{ '# ' if mariadb__relay_log_info_file is not defined else '' }}relay_log_info_file = {{ mariadb__logdir + '/' + mariadb__relay_log_info_file | default('', true) }}
+{{ '# ' if mariadb__log_slave_updates is not defined or not mariadb__log_slave_updates else'' }}log_slave_updates
+{{ '# ' if mariadb__read_only is not defined or not mariadb__read_only else '' }}read_only
+#
+# If applications support it, this stricter sql_mode prevents some
+# mistakes like inserting invalid dates etc.
+{{ '# ' if mariadb__sql_mode is not defined else '' }}sql_mode = {{ mariadb__sql_mode | default('', true) }}
+#
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+{{ '# ' if mariadb__default_storage_engine is not defined else '' }}default_storage_engine = {{ mariadb__default_storage_engine | default('', true) }}
+# you can't just change log file size, requires special procedure
+{{ '# ' if mariadb__innodb_log_file_size is not defined else '' }}innodb_log_file_size = {{ mariadb__innodb_log_file_size | default('', true) }}
+{{ '# ' if mariadb__innodb_buffer_pool_size is not defined else '' }}innodb_buffer_pool_size = {{ mariadb__innodb_buffer_pool_size | default('', true) }}
+{{ '# ' if mariadb__innodb_log_buffer_size is not defined else '' }}innodb_log_buffer_size = {{ mariadb__innodb_log_buffer_size | default('', true) }}
+{{ '# ' if mariadb__innodb_file_per_table is not defined else '' }}innodb_file_per_table = {{ mariadb__innodb_file_per_table| default('', true) }}
+{{ '# ' if mariadb__innodb_open_files is not defined else '' }}innodb_open_files = {{ mariadb__innodb_open_files | default('', true) }}
+{{ '# ' if mariadb__innodb_io_capacity is not defined else '' }}innodb_io_capacity = {{ mariadb__innodb_io_capacity | default('', true) }}
+{{ '# ' if mariadb__innodb_flush_method is not defined else '' }}innodb_flush_method = {{ mariadb__innodb_flush_method | default('', true) }}
+#
+# * Security Features
+#
+# Read the manual, too, if you want chroot!
+# chroot = /var/lib/mysql/
+#
+# For generating SSL certificates I recommend the OpenSSL GUI "tinyca".
+#
+# ssl-ca=/etc/mysql/cacert.pem
+# ssl-cert=/etc/mysql/server-cert.pem
+# ssl-key=/etc/mysql/server-key.pem#
+# * Basic Settings
+#
+#
+# * Custom
+#
+{% if mariadb__custom_configs is defined and mariadb__custom_configs | length > 0 %}
+{% for item, value in mariadb__custom_configs.items() | sort() %}
+{{ item }} = {{ value | string }}
+{% endfor %}
+{% endif %}
+
+[isamchk]
+key_buffer = {{ mariadb__key_buffer_size }}

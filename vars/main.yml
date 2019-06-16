@@ -1,0 +1,24 @@
+---
+
+mariadb__debian_repo_url: "{{ 'http://' if not mariadb__repo_https else 'https://' }}ftp.osuosl.org/pub/mariadb/repo/{{ mariadb__version }}"
+mariadb__debian_repo: "deb {{ mariadb__debian_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main"
+mariadb__debian_repo_key: ['0xF1656F24C74CD1D8', '0xcbcb082a1bb943db']
+
+mariadb__redhat_repo_url: "{{ 'http://' if not mariadb__repo_https else 'https://' }}yum.mariadb.org/{{ mariadb__version }}"
+mariadb__redhat_distro: "{{ ansible_distribution|lower|regex_replace('redhat', 'rhel')|regex_replace('oraclelinux', 'centos') }}"
+mariadb__redhat_repo: "{{ mariadb__redhat_repo_url }}/{{ mariadb__redhat_distro }}{{ ansible_distribution_major_version }}-amd64"
+mariadb__redhat_repo_key: "{{ 'http://' if not mariadb__repo_https else 'https://' }}yum.mariadb.org/RPM-GPG-KEY-MariaDB"
+
+mariadb__server_bin: "{{ '/usr/bin/mysql'
+                    if ((ansible_distribution == 'Fedora') and
+                    (ansible_distribution_major_version >= '27'))
+                    else '/usr/sbin/mysqld' }}"
+
+mariadb__user: mysql
+
+mariadb__owner: root
+mariadb__group: root
+
+mariadb__pidfile: "{{ mariadb__sysdir }}/mysqld.pid"
+mariadb__socket: "{{ mariadb__sysdir }}/mysqld.sock"
+mariadb__root_mycnf: /root/.my.cnf

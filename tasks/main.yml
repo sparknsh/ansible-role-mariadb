@@ -1,0 +1,99 @@
+---
+
+- name: Include {{ ansible_os_family }} Family Specific Variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Include MariaDB {{ ansible_os_family }} Family Repo
+  include_tasks: "setup-{{ ansible_os_family }}.yml"
+
+- name: Install MariaDB
+  package:
+    name: "{{ mariadb__packages }}"
+    state: present
+  notify:
+    - 'Stop MariaDB Service'
+
+- name: Start MariaDB Service
+  service:
+    name: "{{ mariadb__service }}"
+    state: started
+    enabled: true
+
+- name: Flush Handlers
+  meta: flush_handlers
+
+- name: Remove All Default Files
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items: '{{ mariadb__conf_remove }}'
+  when: mariadb__conf_remove is defined and
+        item is defined and item
+
+- name: Set MariaDB Config Files
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mariadb__mainconfigdir if (item == 'my.cnf') else mariadb__configdir }}/{{ item }}"
+    owner: "{{ mariadb__owner }}"
+    group: "{{ mariadb__group }}"
+    mode: 0644
+  with_items:
+    - "my.cnf"
+    - "mariadb-server.cnf"
+  loop_control:
+    label: "{{ mariadb__mainconfigdir if (item == 'my.cnf') else mariadb__configdir }}/{{ item }}"
+  notify:
+    - "MariaDB Check Config"
+    - "Restart MariaDB Service"
+
+- name: Flush Handlers
+  meta: flush_handlers
+
+- name: Set MariaDB root Password File
+  template:
+    src: root-my.cnf.j2
+    dest: '{{ mariadb__root_mycnf }}'
+    owner: "{{ mariadb__owner }}"
+    group: "{{ mariadb__group }}"
+    mode: 0600
+
+- name: Set MariaDB root Password
+  mysql_user:
+    name: root
+    host_all: true
+    password: "{{ mariadb__root_password }}"
+    update_password: always
+    check_implicit_admin: true
+    state: present
+    login_unix_socket: "{{ mariadb__socket }}"
+
+- name: MariaDB Remove anonymous Users
+  mysql_user:
+    name: ""
+    host_all: true
+    state: absent
+    login_unix_socket: "{{ mariadb__socket }}"
+
+- name: MariaDB Remove test Database
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: "{{ mariadb__socket }}"
+
+- name: Set Databases
+  mysql_db:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: "{{ mariadb__socket }}"
+  with_items: "{{ mariadb__databases }}"
+
+- name: Set Users
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    update_password: always
+    priv: "{{ item.priv | default('*.*:USAGE') }}"
+    encrypted: "{{ item.encrypted | default('false') }}"
+    login_unix_socket: "{{ mariadb__socket }}"
+  with_items: "{{ mariadb__users }}"

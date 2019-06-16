@@ -1,0 +1,24 @@
+---
+
+mariadb__packages:
+  - mariadb-server
+  - python-mysqldb
+
+mariadb__service: "{{ 'mariadb'
+                     if (ansible_distribution_major_version < '14')
+                     else 'mysql' }}"
+
+mariadb__mainconfigdir: /etc/mysql
+mariadb__configdir: /etc/mysql/conf.d
+mariadb__config_file: /etc/mysql/conf.d/server.cnf
+mariadb__sysdir: /var/run/mysqld
+mariadb__logdir: /var/log/mysql
+
+mariadb__conf_remove:
+  - "{{ mariadb__mainconfigdir }}/mariadb.cnf"
+  - "{{ mariadb__mainconfigdir }}/mariadb.conf.d"
+  - "{{ mariadb__configdir }}/client.cnf"
+  - "{{ mariadb__configdir }}/mysql.cnf"
+  - "{{ mariadb__configdir }}/mysqld_safe_syslog.cnf"
+  - "{{ mariadb__configdir }}/mysqldump.cnf"
+  - "{{ mariadb__configdir }}/server.cnf"

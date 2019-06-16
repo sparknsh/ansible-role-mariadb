@@ -1,0 +1,19 @@
+---
+
+- name: MariaDB Check Config
+  shell: '{{ mariadb__server_bin }} --help --verbose --skip-networking 1>/dev/null'
+
+- name: Stop MariaDB Service
+  service:
+    name: "{{ mariadb__service }}"
+    state: stopped
+
+- name: Start MariaDB Service
+  service:
+    name: "{{ mariadb__service }}"
+    state: started
+
+- name: Restart MariaDB Service
+  service:
+    name: "{{ mariadb__service }}"
+    state: restarted

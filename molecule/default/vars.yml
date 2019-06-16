@@ -1,0 +1,18 @@
+---
+
+mariadb__version: 10.3
+mariadb__root_password: Se(ureRooTp@s$word!
+mariadb__databases:
+  - name: database10
+    state: present
+
+mariadb__users:
+  - name: user1
+    host: 127.0.0.1
+    password: secret
+    priv: "database10.*:ALL"
+    encrypted: false
+
+mariadb__custom_configs:
+  innodb_file_format: barracuda
+  innodb_force_recovery: 0

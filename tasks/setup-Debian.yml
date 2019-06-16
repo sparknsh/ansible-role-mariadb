@@ -1,0 +1,29 @@
+---
+
+- name: Check that HTTPS transport is available to APT
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: true
+  when: mariadb__repo_https | bool
+
+- name: Install MariaDB pre-reqs
+  apt:
+    name: ["software-properties-common", "dirmngr"]
+    state: present
+    update_cache: true
+
+- name: Add MariaDB APT Key
+  apt_key:
+    id: "{{ item }}"
+    keyserver: keyserver.ubuntu.com
+  with_items: "{{ mariadb__debian_repo_key }}"
+
+- name: Add MariaDB APT Repo
+  apt_repository:
+    repo: "{{ mariadb__debian_repo }}"
+    state: present
+
+- name: Update APT Cache
+  apt:
+    update_cache: true
