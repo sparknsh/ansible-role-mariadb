@@ -39,7 +39,7 @@
     mode: 0644
   with_items:
     - "my.cnf"
-    - "mariadb-server.cnf"
+    - "00_mariadb-server.cnf"
   loop_control:
     label: "{{ mariadb__mainconfigdir if (item == 'my.cnf') else mariadb__configdir }}/{{ item }}"
   notify:

@@ -1,6 +1,6 @@
 # Ansible Role: MariaDB
 
-#### Version: 1.0.0
+#### Version: 1.0.1
 
 [![](https://img.shields.io/badge/role-sparknsh.mariadb-blue.svg)](https://galaxy.ansible.com/sparknsh/mariadb)
 
