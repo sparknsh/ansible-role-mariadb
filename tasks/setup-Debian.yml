@@ -5,7 +5,8 @@
     name: apt-transport-https
     state: present
     update_cache: true
-  when: mariadb__repo_https | bool
+  when:
+    - mariadb__repo_https | bool
 
 - name: Install MariaDB pre-reqs
   apt:
@@ -22,6 +23,7 @@
 - name: Add MariaDB APT Repo
   apt_repository:
     repo: "{{ mariadb__debian_repo }}"
+    filename: mariadb
     state: present
 
 - name: Update APT Cache

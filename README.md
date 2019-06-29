@@ -1,6 +1,6 @@
 # Ansible Role: MariaDB
 
-#### Version: 1.0.1
+#### Version: 1.0.2
 
 [![](https://img.shields.io/badge/role-sparknsh.mariadb-blue.svg)](https://galaxy.ansible.com/sparknsh/mariadb)
 
@@ -9,20 +9,20 @@ Development of this project is managed in a private repository then pushed out t
 ## Role Variables
 
 ```yaml
-mariadb__version: 10.3
+mariadb__version: 10.4
 mariadb__repo_https: true
 
 mariadb__root_password: root
 
 mariadb__databases: []
-#  - name: database10
+#  - name: database
 #    state: present
 
 mariadb__users: []
-#  - name: user1
+#  - name: user
 #    host: 127.0.0.1
 #    password: secret
-#    priv: "database10.*:ALL"
+#    priv: "database.*:ALL"
 #    encrypted: false
 
 # * Basic Settings
@@ -117,7 +117,7 @@ mariadb__custom_configs: []
 #### Example
 
 ```yaml
-mariadb__version: 10.2
+mariadb__version: 10.3
 mariadb__root_password: Se(ureRooTp@s$word!
 mariadb__databases:
   - name: database10

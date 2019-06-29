@@ -27,8 +27,8 @@
     path: '{{ item }}'
     state: absent
   with_items: '{{ mariadb__conf_remove }}'
-  when: mariadb__conf_remove is defined and
-        item is defined and item
+  when:
+    - mariadb__conf_remove is defined
 
 - name: Set MariaDB Config Files
   template:

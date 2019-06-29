@@ -3,7 +3,20 @@
 - name: Add MariaDB YUM Repo
   yum_repository:
     name: MariaDB
+    file: mariadb
     description: Maridb repository
     baseurl: "{{ mariadb__redhat_repo }}"
     gpgcheck: true
     gpgkey: "{{ mariadb__redhat_repo_key }}"
+
+- name: Update cache YUM
+  yum:
+    update_cache: true
+  when:
+    - ansible_distribution != 'Fedora'
+
+- name: Update cache DNF
+  dnf:
+    update_cache: true
+  when:
+    - ansible_distribution == 'Fedora'
